@@ -5,6 +5,6 @@ export default class Character {
     this.defence = 0;
     this.health = 50;
     this.type = type;
-    if (new.target.name === 'Character') throw Error("Character() can't be called with new");
+    if (new.target.name === 'Character') throw Error("Character can't be called with new");
   }
 }

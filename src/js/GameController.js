@@ -66,7 +66,7 @@ export default class GameController {
   onCellEnter(index) {
     const character = this.getCharacterByIndex(index);
     if (character) this.gamePlay.setCursor('pointer');
-    if (character) this.gamePlay.showCellTooltip(`🎖${character.level} ⚔${character.attack} 🛡${character.defence} ❤${character.health}`, index);
+    if (character) this.gamePlay.showCellTooltip(this.getMessage(character), index);
     const selectedCharacter = GameState.positions.find(item => item.position === this.cellSelected).character;
     const step = Math.floor(selectedCharacter.attack / 10);
     const move = Math.floor(selectedCharacter.defence / 10);
@@ -92,6 +92,10 @@ export default class GameController {
 
   getCharacterByIndex(index) {
     return GameState.positions.find(item => item.position === index).character;
+  }
+
+  getMessage(character) {
+    return `🎖${character.level} ⚔${character.attack} 🛡${character.defence} ❤${character.health}`;
   }
 
   getElement(index) {
