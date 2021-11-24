@@ -1,9 +1,8 @@
-import GameController from "../js/GameController";
-import Zombie from "../js/Zombie";
-import Magician from "../js/Magician";
+import GameController from '../js/GameController';
+import Zombie from '../js/Zombie';
+import Magician from '../js/Magician';
 
-
-test(("тесты на тегированный шаблон"), () => {
+test(('тесты на тегированный шаблон'), () => {
   const level = 10;
   const zombie = new Zombie(level);
   const game = new GameController();

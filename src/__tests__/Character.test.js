@@ -1,12 +1,11 @@
 import Character from '../js/Character';
-import Zombie from "../js/Zombie";
+import Zombie from '../js/Zombie';
 
 test(("class Character can't have instance"), () => {
   const level = 10;
   try {
     new Character(level);
-  }
-  catch (e) {
+  } catch (e) {
     expect(e.message).toBe("Character can't be called with new");
   }
 });
@@ -19,8 +18,7 @@ test(('class Character child'), () => {
     attack: 25,
     defence: 25,
     health: 50,
-    type: 'zombie'};
+    type: 'zombie',
+  };
   expect(zombie).toEqual(expected);
 });
-
-

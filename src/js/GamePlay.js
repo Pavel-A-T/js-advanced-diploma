@@ -1,5 +1,7 @@
-import { calcHealthLevel, calcTileType } from './utils';
+import {calcHealthLevel, calcTileType} from './utils';
 import GameState from './GameState';
+import startGame from "./app";
+import Themes from "./themes";
 
 export default class GamePlay {
   constructor() {
@@ -117,7 +119,7 @@ export default class GamePlay {
    *
    * @param callback
    */
-  addCellClickListener(callback) { // вызовкется с индексом
+  addCellClickListener(callback) {
     this.cellClickListeners.push(callback);
   }
 
@@ -168,6 +170,10 @@ export default class GamePlay {
   onNewGameClick(event) {
     event.preventDefault();
     this.newGameListeners.forEach((o) => o.call(null));
+    Themes.counter = 0;
+    startGame();
+    const character = GameState.positions.find(item => GameState.isCharacter(item.character));
+    this.selectCell(character.position);
   }
 
   onSaveGameClick(event) {

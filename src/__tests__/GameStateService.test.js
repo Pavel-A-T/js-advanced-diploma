@@ -1,5 +1,5 @@
 import GameStateService from '../js/GameStateService';
-import GamePlay from "../js/GamePlay";
+import GamePlay from '../js/GamePlay';
 
 jest.mock('../js/GameStateService');
 

@@ -78,27 +78,3 @@ export default class GameState {
     return GameState.positions.find(item => item.position === index);
   }
 }
-
-function xyz(promises, potok) {
-
-  function doPromise(value) {
-    console.log(value);
-    promises.shift().then((data)=>{
-      if (promises.length > 0) doPromise();
-      else console.log(data);
-    })
-  }
-
-  for (let i = 0; i < potok; i++) {
-    let p = promises.shift();
-    p.then((data) => {
-      doPromise(data);
-    });
-  }
-}
-
-[new Promise((resolve) => setTimeout(resolve, 10, 1)),
-  new Promise((resolve) => setTimeout(resolve, 50, 2)),
-  new Promise((resolve) => setTimeout(resolve, 20, 3)),
-  new Promise((resolve) => setTimeout(resolve, 90, 4)),
-  new Promise((resolve) => setTimeout(resolve, 30, 5))]

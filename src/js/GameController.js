@@ -1,25 +1,31 @@
-import Themes from "./themes";
-import {getComputerTeam, getTeam} from "./generators";
-import GameState from "./GameState";
-import ComputerController from "./ComputerController";
+import Themes from './themes';
+import { getComputerTeam, getTeam } from './generators';
+import GameState from './GameState';
+import ComputerController from './ComputerController';
 
 export default class GameController {
   constructor(gamePlay, stateService) {
     this.gamePlay = gamePlay;
     this.stateService = stateService;
     this.computer = new ComputerController(this.gamePlay);
-    this.level = 1;
+    this.level = 0;
   }
 
   init() {
-    this.gamePlay.drawUi(Themes.next());
+    const theme = Themes.next();
+    if (theme[0] === 'prairie') {
+      this.level = 0;
+      GameState.positions = [];
+    }
+    this.gamePlay.drawUi(theme);
     this.gamePlay.addCellEnterListener((index) => this.onCellEnter(index));
     this.gamePlay.addCellClickListener((index) => this.onCellClick(index));
     this.gamePlay.addCellLeaveListener((index) => this.onCellLeave(index));
-    GameState.positions.push(...getTeam(this.level));
-    this.cellSelected = GameState.positions[0].position;
-    this.gamePlay.selectCell(this.cellSelected);
+    this.level += 1;
     GameState.positions.push(...getComputerTeam(this.level));
+    GameState.positions.push(...getTeam(this.level));
+    this.cellSelected = GameState.positions[GameState.positions.length - 1].position;
+    this.gamePlay.selectCell(this.cellSelected);
     this.gamePlay.redrawPositions(GameState.positions);
   }
 
@@ -32,7 +38,7 @@ export default class GameController {
       return;
     }
     if (GameState.start) {
-      //cell is empty
+      // cell is empty
       if (!posPersone) {
         const character = GameState.getPositionedCharacterByIndex(this.cellSelected);
         const move = Math.floor(character.character.defence / 10);
@@ -49,7 +55,7 @@ export default class GameController {
         this.computer.attackComputer();
         return;
       }
-      //atack
+      // atack
       if (this.gamePlay.boardEl.style.cursor === 'crosshair') {
         const attacker = this.getCharacterByIndex(this.cellSelected);
         const target = this.getCharacterByIndex(index);
@@ -62,12 +68,11 @@ export default class GameController {
     }
   }
 
-
   onCellEnter(index) {
     const character = this.getCharacterByIndex(index);
     if (character) this.gamePlay.setCursor('pointer');
     if (character) this.gamePlay.showCellTooltip(this.getMessage(character), index);
-    const selectedCharacter = GameState.positions.find(item => item.position === this.cellSelected).character;
+    const selectedCharacter = GameState.positions.find((item) => item.position === this.cellSelected).character;
     const step = Math.floor(selectedCharacter.attack / 10);
     const move = Math.floor(selectedCharacter.defence / 10);
     if (GameState.checkIndex(this.cellSelected, step, index) && GameState.isOpponent(character)) {
@@ -91,7 +96,8 @@ export default class GameController {
   }
 
   getCharacterByIndex(index) {
-    return GameState.positions.find(item => item.position === index).character;
+    const person = GameState.positions.find((item) => item.position === index);
+    if (person) return person.character;
   }
 
   getMessage(character) {
@@ -105,7 +111,7 @@ export default class GameController {
 
   nextLevel() {
     if (this.computer.getTeam().length === 0 || this.computer.getGamerTeam().length === 0) {
-      this.level = ++this.level > 4 ? 0 : this.level;
+      this.level = ((this.level + 1) > 4) ? 0 : this.level;
       this.init();
       return true;
     }

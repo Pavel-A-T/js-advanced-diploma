@@ -2,6 +2,11 @@
 
 ###### tags: `netology` `advanced js`
 
+
+Ссылка на релиз https://pavel-a-t.github.io/js-advanced-diploma/
+Build - [![Build status](https://ci.appveyor.com/api/projects/status/ooj4mnv0dn279pfk/branch/master?svg=true)](https://ci.appveyor.com/project/Pavel-A-T/bhj-diploma/branch/master)
+
+
 ## Предыстория
 
 Вы неплохо овладели не только продвинутыми возможностями JS, но и инфраструктурными инструментами. И вам поручили первый проект: разработать небольшую пошаговую игру.
