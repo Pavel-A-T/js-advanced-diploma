@@ -20,7 +20,6 @@ test('Should mock load fail', () => {
   const mocked = stateService.load.mockReturnValue(undefined);
   expect(() => stateService.load(mocked)()).toThrow();
   window.alert = jest.fn();
-  const gamePlay = new GamePlay();
-  gamePlay.showMessage('Ошибка при загрузке игры!');
+  GamePlay.showMessage('Ошибка при загрузке игры!');
   expect(window.alert).toBeCalledWith('Ошибка при загрузке игры!');
 });
