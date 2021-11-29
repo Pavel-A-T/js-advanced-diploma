@@ -1,33 +1,84 @@
 export default class GameState {
-  static start = true;
-  static positions = [];
+  constructor(level, start = true, cellActive = -1, positions = [],
+    timeCounter = 0, score = 0) {
+    this._level = level;
+    this._start = start;
+    this._cellActive = cellActive;
+    this._positions = positions;
+    this._timeCounter = timeCounter;
+    const expression = (sessionStorage.getItem('this.score') && sessionStorage.getItem('this.score').length > 0);
+    this._score = expression ? Number(sessionStorage.getItem('this.score')) : score;
+  }
 
-  static from(object) {
-    // TODO: create object
+  set level(value) {
+    this._level = value;
+  }
+
+  get level() {
+    return this._level;
+  }
+
+  get score() {
+    return this._score;
+  }
+
+  set score(value) {
+    this._score = value;
+  }
+
+  get start() {
+    return this._start;
+  }
+
+  set start(value) {
+    this._start = value;
+  }
+
+  get cellActive() {
+    return this._cellActive;
+  }
+
+  set cellActive(cell) {
+    this._cellActive = cell;
+  }
+
+  get positions() {
+    return this._positions;
+  }
+
+  set positions(positions) {
+    this._positions = positions;
+  }
+
+  get timeCounter() {
+    return this._timeCounter;
+  }
+
+  set timeCounter(value) {
+    this._timeCounter = value;
+  }
+
+  static from(object = this) {
     return JSON.stringify(object);
   }
-  static isStart() {
-    this.start = !this.start;
-    return !this.start;
-  }
 
-  static isOpponent(character) {
-    const type = character?.type;
-    if (type === 'zombie' || type === 'undead' || type ==='daemon' || type === 'vampire') {
+  isOpponent(character) {
+    const type = character ? character.type : null;
+    if (type === 'zombie' || type === 'undead' || type === 'daemon' || type === 'vampire') {
       return true;
     }
     return false;
   }
 
-  static isCharacter(character) {
-    const type = character?.type;
-    if (type === 'bowman' || type === 'magician' || type ==='swordsman') {
+  isCharacter(character) {
+    const type = character ? character.type : null;
+    if (type === 'bowman' || type === 'magician' || type === 'swordsman') {
       return true;
     }
     return false;
   }
 
-  static checkIndex(currentPosition, step, index) {
+  checkIndex(currentPosition, step, index) {
     const boardSize = 8;
     let line;
     let next = currentPosition - boardSize * step;
@@ -49,32 +100,33 @@ export default class GameState {
     return false;
   }
 
-  static showDamage(gamePlay, target, index, damage) {
-  gamePlay.showDamage(index, damage).then(() => {
-      target.health -= damage;
-      if (target.health <= 0) {
-        //this.onCellLeave(index);
-        gamePlay.cells[index].title = "";
-        const element = GameState.positions.findIndex(item => item === this.getPositionedCharacterByIndex(index));
-        GameState.positions.splice(element, 1);
-      }
-      gamePlay.redrawPositions(GameState.positions);
-    });
+  async showDamage(gamePlay, target, index, damage) {
+    const showDamageTarget = target;
+    const game = gamePlay;
+    await game.showDamage(index, damage);
+    showDamageTarget.health -= damage;
+    if (showDamageTarget.health <= 0) {
+      game.cells[index].title = '';
+      const element = this.positions.findIndex((item) => item === this.getPositionedCharacterByIndex(index));
+      if (element > -1) this.positions.splice(element, 1);
+      game.deselectCell(index);
+    }
+    game.redrawPositions(this.positions);
   }
 
- static getLine(ind) {
-    if (0 <= ind && ind <= 7) return 0;
-    if (8 <= ind && ind <= 15) return 1;
-    if (16 <= ind && ind <= 23) return 2;
-    if (24 <= ind && ind <= 31) return 3;
-    if (32 <= ind && ind <= 39) return 4;
-    if (40 <= ind && ind <= 47) return 5;
-    if (48 <= ind && ind <= 55) return 6;
-    if (56 <= ind && ind <= 63) return 7;
+  getLine(ind) {
+    if (ind >= 0 && ind <= 7) return 0;
+    if (ind >= 8 && ind <= 15) return 1;
+    if (ind >= 16 && ind <= 23) return 2;
+    if (ind >= 24 && ind <= 31) return 3;
+    if (ind >= 32 && ind <= 39) return 4;
+    if (ind >= 40 && ind <= 47) return 5;
+    if (ind >= 48 && ind <= 55) return 6;
+    if (ind >= 56 && ind <= 63) return 7;
     return -1;
   }
 
-  static getPositionedCharacterByIndex(index) {
-    return GameState.positions.find(item => item.position === index);
+  getPositionedCharacterByIndex(index) {
+    return this.positions.find((item) => item.position === index);
   }
 }

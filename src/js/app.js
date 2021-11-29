@@ -5,7 +5,7 @@ import GamePlay from './GamePlay';
 import GameController from './GameController';
 import GameStateService from './GameStateService';
 
-export default function startGame() {
+function startGame() {
   const gamePlay = new GamePlay();
   gamePlay.bindToDOM(document.querySelector('#game-container'));
   const stateService = new GameStateService(localStorage);
@@ -14,6 +14,5 @@ export default function startGame() {
 }
 
 startGame();
-
 
 // don't write your code here

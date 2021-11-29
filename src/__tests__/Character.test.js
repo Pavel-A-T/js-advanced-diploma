@@ -4,6 +4,7 @@ import Zombie from '../js/Zombie';
 test(("class Character can't have instance"), () => {
   const level = 10;
   try {
+    // eslint-disable-next-line
     new Character(level);
   } catch (e) {
     expect(e.message).toBe("Character can't be called with new");

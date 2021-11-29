@@ -7,7 +7,6 @@ import Daemon from './Daemon';
 import Undead from './Undead';
 import Zombie from './Zombie';
 import Vampire from './Vampire';
-import GameState from './GameState';
 
 const human = 'human';
 const computer = 'computer';
@@ -21,9 +20,9 @@ const computer = 'computer';
  */
 
 export function* characterGenerator(allowedTypes, maxLevel) {
-  const random = allowedTypes[Math.floor(Math.random() * allowedTypes.length)];
+  const Random = allowedTypes[Math.floor(Math.random() * allowedTypes.length)];
   const level = Math.floor((Math.random() * maxLevel) + 1);
-  yield new random(level);
+  yield new Random(level);
 }
 
 export function generateTeam(allowedTypes, maxLevel, characterCount) {
@@ -45,26 +44,30 @@ function getAllowedTypes(team, level) {
   return [Undead, Vampire, Zombie, Daemon];
 }
 
-export function getTeam(level) {
+function calculateTeam(team, fields) {
+  const arr = team;
+  for (let i = 0; i < team.length; i += 1) {
+    const cell = Math.floor(Math.random() * fields.length);
+    arr[i] = new PositionedCharacter(team[i], fields[cell]);
+    fields.splice(cell, 1);
+  }
+}
+
+export function getTeam(level, gameState) {
   const fields = [0, 1, 8, 9, 16, 17, 24, 25, 32, 33, 40, 41, 48, 49, 56, 57];
-  const count = Themes.counter - 1;
-  if (level === 1) {
-    const team = generateTeam(getAllowedTypes(human, count), level, 2);
-    for (let i = 0; i < team.length; i += 1) {
-      const cell = Math.floor(Math.random() * fields.length);
-      team[i] = new PositionedCharacter(team[i], fields[cell]);
-      fields.splice(cell, 1);
-    }
+  if (level === 0) {
+    const team = generateTeam(getAllowedTypes(human, Themes.counter), level, 2);
+    calculateTeam(team, fields);
     return team;
   }
 
   // Здоровье выживших
-  const aliveTeam = GameState.positions.filter((item) => GameState.isCharacter(item.character));
+  const aliveTeam = gameState.positions.filter((item) => gameState.isCharacter(item.character));
   const gamerTeam = [];
   for (const char of aliveTeam) {
     const attackBefore = char.character.attack;
     const life = char.character.health;
-    char.character.attack = Math.max(attackBefore, attackBefore * (1.8 - life) / 100);
+    char.character.attack = Math.max(attackBefore, (attackBefore * (1.8 - life)) / 100);
     if (life + 80 >= 100) char.character.health = 100;
     else char.character.health += 80;
     char.character.level += 1;
@@ -78,19 +81,15 @@ export function getTeam(level) {
   return gamerTeam;
 }
 
-export function getComputerTeam(level) {
+export function getComputerTeam(level, gameState) {
   const fields = [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55, 62, 63];
-  const aliveTeam = GameState.positions.filter((item) => GameState.isCharacter(item.character));
-  const count = level === 1 ? 2 : aliveTeam.length + 1;
+  const aliveTeam = gameState.positions.filter((item) => gameState.isCharacter(item.character));
+  const count = level === 0 ? 2 : aliveTeam.length + 1;
   for (const char of aliveTeam) {
     const cell = fields.findIndex((item) => item === char.position);
     if (cell > 0) fields.splice(cell, 1);
   }
   const team = generateTeam(getAllowedTypes(computer), level, count);
-  for (let i = 0; i < team.length; i += 1) {
-    const cell = Math.floor(Math.random() * fields.length);
-    team[i] = new PositionedCharacter(team[i], fields[cell]);
-    fields.splice(cell, 1);
-  }
+  calculateTeam(team, fields);
   return team;
 }
