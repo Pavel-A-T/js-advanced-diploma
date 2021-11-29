@@ -4,7 +4,8 @@
 
 
 Ссылка на релиз https://pavel-a-t.github.io/js-advanced-diploma/
-Build - [![Build status](https://ci.appveyor.com/api/projects/status/ooj4mnv0dn279pfk/branch/master?svg=true)](https://ci.appveyor.com/project/Pavel-A-T/bhj-diploma/branch/master)
+Build - [![Build status](https://ci.appveyor.com/api/projects/status/0n2pfjmjn7c5xmqo/branch/master?svg=true)](https://ci.appveyor.com/project/Pavel-A-T/js-advanced-diploma/branch/master)
+
 
 
 ## Предыстория
